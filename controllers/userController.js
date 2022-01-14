@@ -46,21 +46,24 @@ module.exports = {
   },
   //   Delete a user
   deleteUser(req, res) {
-    User.findOneAndDelete({ _id: req.params.userId })
-      .then((userData) => {
+    console.log("user id is ", req.params.userID);
+    User.findOneAndDelete({ _id: req.params.userID })
+      .then(async (userData) => {
         if (!userData) {
           res.status(404).json({ message: "No user with that ID" });
           return;
         }
-        User.updateMany(
+        await User.updateMany(
           { _id: { $in: userData.username } },
-          { $pull: { friends: params.id } }
+          { $pull: { friends: req.params.userID } }
         );
-        Thought.deleteMany({ username: userData.username });
+        await Thought.deleteMany({ username: userData.username });
+        res.json({ message: "User deleted!" });
       })
-      .catch((err) => res.status(500).json(err))
-      .then(() => res.json({ message: "User deleted!" }))
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
 
   //   Add new friend
