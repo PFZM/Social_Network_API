@@ -4,7 +4,7 @@
 
 ## Link to see the deployed application:
 
-[YouTube video](https://youtu.be/)
+[YouTube video](https://youtu.be/ou4tpGU7xIQ)
 
 ## Description
 

@@ -10,7 +10,7 @@ module.exports = {
   },
   //   Get a single user
   getSingleUser(req, res) {
-    User.findOne({ _id: req.params.userId })
+    User.findOne({ _id: req.params.userID })
       .populate([{ path: "thoughts" }, { path: "friends" }])
       .then((user) =>
         !user
@@ -33,7 +33,7 @@ module.exports = {
   //   Update user
   updateUser(req, res) {
     User.findOneAndUpdate(
-      { _id: req.params.userId },
+      { _id: req.params.userID },
       { $set: req.body },
       { runValidators: true, new: true }
     )
@@ -46,7 +46,6 @@ module.exports = {
   },
   //   Delete a user
   deleteUser(req, res) {
-    console.log("user id is ", req.params.userID);
     User.findOneAndDelete({ _id: req.params.userID })
       .then(async (userData) => {
         if (!userData) {
@@ -54,7 +53,7 @@ module.exports = {
           return;
         }
         await User.updateMany(
-          { _id: { $in: userData.username } },
+          { _id: { $in: userData.userID } },
           { $pull: { friends: req.params.userID } }
         );
         await Thought.deleteMany({ username: userData.username });
@@ -70,7 +69,7 @@ module.exports = {
   addNewFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userID },
-      { $push: { friends: req.params.friendId } },
+      { $push: { friends: req.params.friendID } },
       { new: true }
     )
       .then((data) =>
@@ -85,7 +84,7 @@ module.exports = {
   deleteFriend(req, res) {
     User.findByIdAndUpdate(
       { _id: req.params.userID },
-      { $pull: { friends: req.params.friendId } },
+      { $pull: { friends: req.params.friendID } },
       { new: true }
     )
       .then((data) =>
